@@ -1,0 +1,16 @@
+# macOS metadata
+.DS_Store
+._*
+
+# Build archives and source backups (kept beside the repository as rollback copies)
+*.zip
+*.tar.gz
+backups/
+
+# Design previews and generated outputs (not part of the mod or its documentation)
+*-preview.png
+*-contact-sheet.png
+*.log
+*.bak
+*.tmp
+test_output*.txt
