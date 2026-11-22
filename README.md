@@ -1,6 +1,6 @@
 # Darktide Crosshair Alerts
 
-Version **1.0.0-rc1** (release candidate) for the Darktide Mod Framework (DMF).
+Version **1.0.0** for the Darktide Mod Framework (DMF).
 
 Crosshair Alerts replaces ordinary reticles with a configurable dot and shows short, high-contrast alerts just below the centre of the screen: a stalled data interrogator, a low magazine or low total ammunition, low or broken toughness, a combat ability or blitz becoming ready, the Arbites dog command, and an expiring stimm. Every alert has its own toggle in Mod Options. Alerts can show an icon with text, an icon only, or text only.
 
@@ -76,19 +76,25 @@ Existing saved settings carry over unchanged from every 0.x development build.
 
 ## Install
 
-Close Darktide first. These examples are for Fedora with Steam; set `game_dir` to your own Darktide folder. On other systems, extract the ZIP into the game's `mods` folder and add the line `DarktideCrosshairAlerts` to `mods/mod_load_order.txt`.
+You need a working Darktide Mod Loader and DMF. Close Darktide first.
 
-**Optional icons:** install Simple Assets 2.0.x from Nexus Mods (mod 1008). Put its `SimpleAssets` folder in the game's `mods` folder, keeping its `bin/simple-assets-runtime.dll`, and add the line `SimpleAssets` to `mods/mod_load_order.txt`. Its position in the list doesn't matter.
+1. Extract `DarktideCrosshairAlerts-1.0.0.zip` into the game's `mods` folder, so that `mods/DarktideCrosshairAlerts/DarktideCrosshairAlerts.mod` exists. A mod manager that installs Darktide mods into `mods` does the same.
+2. Add the line `DarktideCrosshairAlerts` to `mods/mod_load_order.txt`, after `dmf` if it is listed.
+3. Start the game and open **Mod Options → Crosshair Alerts**.
 
-### Fresh install
+**Optional icons:** install [Simple Assets](https://www.nexusmods.com/warhammer40kdarktide/mods/1008) 2.0.x the same way (its `SimpleAssets` folder, keeping `bin/simple-assets-runtime.dll`, plus the line `SimpleAssets` in `mods/mod_load_order.txt`). Its position in the list doesn't matter. Without it, alerts are shown as text.
 
-Place `DarktideCrosshairAlerts-1.0.0-rc1.zip` in `~/Downloads` and run:
+### Linux example (Steam)
+
+The scripts below do the same from a terminal, with checks and backups. Set `game_dir` to your own Darktide folder and place the ZIP in `~/Downloads`.
+
+Fresh install:
 
 ```bash
 (
   set -e
   game_dir="/run/media/$USER/Games/SteamLibrary/steamapps/common/Warhammer 40,000 DARKTIDE"
-  archive="$HOME/Downloads/DarktideCrosshairAlerts-1.0.0-rc1.zip"
+  archive="$HOME/Downloads/DarktideCrosshairAlerts-1.0.0.zip"
   mod_dir="$game_dir/mods/DarktideCrosshairAlerts"
   load_order="$game_dir/mods/mod_load_order.txt"
 
@@ -106,15 +112,15 @@ Place `DarktideCrosshairAlerts-1.0.0-rc1.zip` in `~/Downloads` and run:
 )
 ```
 
-### Upgrade from a 0.x development build
+### Upgrade
 
-Saved settings, the load order, Simple Assets and DMF stay in place, and no files need deleting. The script backs up the installed mod folder outside the game before replacing its files. (From 0.8.x or earlier, also delete `scripts/mods/DarktideCrosshairAlerts/alert_symbols.lua` from the mod folder after the backup.) Restart the game after upgrading rather than using a DMF reload, so icon textures held by the old build are released.
+Replace the `mods/DarktideCrosshairAlerts` folder with the new one while the game is closed. Saved settings, the load order, Simple Assets and DMF stay in place, and no files need deleting. (From a 0.8.x or earlier development build, also delete `scripts/mods/DarktideCrosshairAlerts/alert_symbols.lua`.) Restart the game rather than using a DMF reload, so icon textures held by the old build are released. The script below backs up the installed mod folder outside the game before replacing its files:
 
 ```bash
 (
   set -e
   game_dir="/run/media/$USER/Games/SteamLibrary/steamapps/common/Warhammer 40,000 DARKTIDE"
-  archive="$HOME/Downloads/DarktideCrosshairAlerts-1.0.0-rc1.zip"
+  archive="$HOME/Downloads/DarktideCrosshairAlerts-1.0.0.zip"
   mod_dir="$game_dir/mods/DarktideCrosshairAlerts"
 
   unzip -tq "$archive"
@@ -147,19 +153,26 @@ Saved settings, the load order, Simple Assets and DMF stay in place, and no file
 
 ## Development and testing
 
-Run `luajit tests/test_mod.lua` (or `lua5.1 tests/test_mod.lua`) from the repository root. The offline suite drives the mod entry point, hooks, HUD drawing, alert timelines and priorities, all three display modes, and the icon texture lifecycle against game, DMF and Simple Assets stand-ins modelled on the vanilla sources. Release candidates are also checked in game on Fedora.
+Run `luajit tests/test_mod.lua` (or `lua5.1 tests/test_mod.lua`) from the repository root. The offline suite drives the mod entry point, hooks, HUD drawing, alert timelines and priorities, all three display modes, and the icon texture lifecycle against game, DMF and Simple Assets stand-ins modelled on the vanilla sources. Releases are also checked in game.
 
-The `DarktideCrosshairAlerts` folder is the mod as shipped; release ZIPs contain only that folder.
+The `DarktideCrosshairAlerts` folder is the mod as shipped, including its copy of `LICENSE`; release ZIPs contain only that folder.
 
 ## Version history
 
-- **1.0.0-rc1:** release candidate built from the verified 0.9.6 source. Version and documentation only.
+- **1.0.0:** first release under the MIT License, identical in code to 1.0.0-rc1 and the verified 0.9.6 source.
+- **1.0.0-rc1:** release candidate. Version and documentation only.
 - **0.9.5–0.9.6:** icon textures retried a bounded number of times after a failure, released on mod unload, and requested one file at a time so one failing file can't affect the others.
 - **0.9.2–0.9.4:** audit and review corrections: AMMO LOW across reloads, held RELOAD during reloads, validated and queued ability and blitz notices, STIM extensions, and pickup credits that expire independently.
 - **0.9.0–0.9.1:** approved icon artwork through Simple Assets, three display modes, the lightning-bolt ABILITY READY icon and golden-yellow colour.
 - **0.7.0–0.8.x:** STIM expiration warning; display-mode option.
 - **0.4.0–0.6.x:** abilities, blitz and dog alerts; category colours; total-ammunition LOW AMMO; dot-first crosshair replacement. 0.6.0 removed the peril and heat alerts (their saved values are ignored).
 - **0.1.0–0.3.x:** crosshair dot, TASK, LOW MAG, LOW AMMO, TOUGHNESS and BROKEN.
+
+## License
+
+Released under the [MIT License](LICENSE). Copyright (c) 2026 FartmanAndBurps. The release ZIP includes the same `LICENSE` inside the `DarktideCrosshairAlerts` folder.
+
+The license covers the mod's code and its nine HUD icons, which were made for this project. Warhammer 40,000: Darktide, the Darktide Mod Loader, DMF and Simple Assets are separate works by their respective owners; none of them is included or covered by this license.
 
 ## References
 
